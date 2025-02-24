@@ -1,0 +1,14 @@
+git config --global user.name ""[Dyourname"
+git config --global user.email "abc@gmail.com"
+git remote -v
+git remote add origin "github link"
+git remote rm origin
+git branch -a
+git branch -r
+git remote show origin
+git branch feature
+git checkouure
+git add files
+git commit -m "meassages" .
+git push origin <url>
+git pull origin
