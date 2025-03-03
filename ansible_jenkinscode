@@ -1,0 +1,25 @@
+---
+- hosts: all
+  user: ansible
+  become: yes
+  connection: ssh
+
+  tasks:
+    - name: installing java in system
+      action: yum name=java-17-amazon-corretto.x86_64 state=present
+
+    - name: getting code from jenkins.io
+      ansible.builtin.get_url:
+        url: https://pkg.jenkins.io/redhat/jenkins.repo
+        dest: /etc/yum.repos.d/jenkins.repo
+
+    - name: rpm key downloading
+      ansible.builtin.rpm_key:
+        key: https://pkg.jenkins.io/redhat/jenkins.io-2023.key
+        state: present
+
+    - name: installing jenkins in slave
+      action: yum name=jenkins state=present
+
+    - name: start the jenkins server
+      service: name=jenkins state=started enabled=yes
