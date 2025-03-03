@@ -23,3 +23,11 @@
 
     - name: start the jenkins server
       service: name=jenkins state=started enabled=yes
+
+    - name: check Jenkins service status
+      ansible.builtin.shell: systemctl status jenkins
+      register: jenkins_status
+
+    - name: display Jenkins service status
+      ansible.builtin.debug:
+        var: jenkins_status.stdout
