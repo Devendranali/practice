@@ -1,0 +1,47 @@
+---
+- hosts: aws_ec2
+  user: ec2_user
+  become: yes
+  connection: ssh
+
+  vars:
+     ansible_ssh_private_key_file: "/opt/ansible/inventory/practice.pem"
+     ansible_ssh_user: "ec2-user"
+
+  tasks:
+    - name: installing java in system
+      action: yum name=java-17-amazon-corretto.x86_64 state=present
+
+    - name: getting code from jenkins.io
+      ansible.builtin.get_url:
+        url: https://pkg.jenkins.io/redhat/jenkins.repo
+        dest: /etc/yum.repos.d/jenkins.repo
+
+    - name: rpm key downloading
+      ansible.builtin.rpm_key:
+        key: https://pkg.jenkins.io/redhat/jenkins.io-2023.key
+        state: present
+
+    - name: installing jenkins in slave
+      action: yum name=jenkins state=present
+
+    - name: start the jenkins server
+      service: name=jenkins state=started enabled=yes
+
+
+
+
+# Note: ansible_code.yml, pemkey of slave server with 600 permissions and aws_ec2.yml plugin files. this file will kept under the dynamic inventory path..
+# /etc/ansible/ansible.cfg ---> 330 line --> add enable_plugins: aws_ec2
+# /etc/ansible/ansible.cfg --> create a dynamic_inventory --> /opt/ansible/inventory/   --> host_key_checking=False
+
+plugin--aws_ec2.yml:::
+
+plugin: aws_ec2
+regions:
+  - us-east-1
+filters:
+  tag:Environment: dev
+
+
+
